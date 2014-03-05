@@ -3,24 +3,24 @@
  *
  * Copyright (c) 2012, Magnus Edenhill
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer. 
+ *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
@@ -155,7 +155,7 @@ static void rd_kafka_buf_rewind (rd_kafka_buf_t *rkbuf, int iovindex) {
 
 
 static struct iovec *rd_kafka_buf_iov_next (rd_kafka_buf_t *rkbuf) {
-	
+
 	assert(rkbuf->rkbuf_msg.msg_iovlen + 1 <= rkbuf->rkbuf_iovcnt);
 	return &rkbuf->rkbuf_iov[rkbuf->rkbuf_msg.msg_iovlen++];
 }
@@ -299,7 +299,7 @@ static void rd_kafka_broker_waitresp_timeout_scan (rd_kafka_broker_t *rkb,
  * Will tear down connection to broker and trigger a reconnect.
  *
  * If 'fmt' is NULL nothing will be logged or propagated to the application.
- * 
+ *
  * Locality: Broker thread
  */
 static void rd_kafka_broker_fail (rd_kafka_broker_t *rkb,
@@ -569,7 +569,7 @@ static void rd_kafka_broker_buf_enq (rd_kafka_broker_t *rkb,
 	rd_kafka_buf_t *rkbuf;
 
 	rkbuf = rd_kafka_buf_new(1, flags & RD_KAFKA_OP_F_FREE ? 0 : size);
-	rkbuf->rkbuf_ts_timeout = rd_clock() + 
+	rkbuf->rkbuf_ts_timeout = rd_clock() +
 		rkb->rkb_rk->rk_conf.socket_timeout_ms * 1000;
 	rkbuf->rkbuf_flags |= flags;
 
@@ -684,6 +684,7 @@ static void rd_kafka_broker_buf_enq (rd_kafka_broker_t *rkb,
 static void rd_kafka_metadata_handle (rd_kafka_broker_t *rkb,
 				      rd_kafka_topic_t *req_rkt,
 				      const char *buf, size_t size) {
+        printf("calling rd_kafka_metadata_handle\n");//xxx
 	struct {
 		int32_t          NodeId;
 		rd_kafkap_str_t *Host;
@@ -847,6 +848,7 @@ static void rd_kafka_broker_metadata_reply (rd_kafka_broker_t *rkb,
 					    rd_kafka_buf_t *reply,
 					    rd_kafka_buf_t *request,
 					    void *opaque) {
+        printf("calling rd_kafka_broker_metadata_reply\n");//xxx
 	rd_kafka_topic_t *rkt = opaque;
 
 	rd_rkb_dbg(rkb, METADATA, "METADATA",
@@ -959,7 +961,7 @@ static void rd_kafka_broker_metadata_req (rd_kafka_broker_t *rkb,
 			tnamelen += RD_KAFKAP_STR_SIZE(rkt->rkt_topic);
 		}
 	}
-	
+
 	buf = malloc(sizeof(arrsize) + tnamelen);
 	arrsize = htonl(arrsize);
 	memcpy(buf+of, &arrsize, 4);
@@ -968,7 +970,7 @@ static void rd_kafka_broker_metadata_req (rd_kafka_broker_t *rkb,
 
 	if (only_rkt || !all_topics) {
 		/* Just our locally known topics */
-			
+
 		TAILQ_FOREACH(rkt, &rkb->rkb_rk->rk_topics, rkt_link) {
 			int tlen;
 			if (only_rkt && only_rkt != rkt)
@@ -1201,7 +1203,7 @@ static int rd_kafka_recv (rd_kafka_broker_t *rkb) {
 
 		rkbuf->rkbuf_iov[0].iov_base = &rkbuf->rkbuf_reshdr;
 		rkbuf->rkbuf_iov[0].iov_len = sizeof(rkbuf->rkbuf_reshdr);
-		
+
 		rkbuf->rkbuf_msg.msg_iov = rkbuf->rkbuf_iov;
 		rkbuf->rkbuf_msg.msg_iovlen = 1;
 
@@ -1213,7 +1215,7 @@ static int rd_kafka_recv (rd_kafka_broker_t *rkb) {
 		/* Receive in progress: adjust the msg to allow more data. */
 		msg.msg_iov = alloca(sizeof(struct iovec) *
 				     rkbuf->rkbuf_iovcnt);
-		
+
 		rd_kafka_msghdr_rebuild(&msg, rkbuf->rkbuf_msg.msg_iovlen,
 					&rkbuf->rkbuf_msg,
 					rkbuf->rkbuf_of);
@@ -1245,7 +1247,7 @@ static int rd_kafka_recv (rd_kafka_broker_t *rkb) {
 
 		if (unlikely(rkbuf->rkbuf_of < sizeof(rkbuf->rkbuf_reshdr))) {
 			/* Need response header for packet length and corrid.
-			 * Wait for more data. */ 
+			 * Wait for more data. */
 			return 0;
 		}
 
@@ -1473,7 +1475,7 @@ static int rd_kafka_send (rd_kafka_broker_t *rkb) {
  */
 static void rd_kafka_broker_buf_retry (rd_kafka_broker_t *rkb,
 				       rd_kafka_buf_t *rkbuf) {
-	
+
 	assert(pthread_self() == rkb->rkb_thread);
 
 	rkb->rkb_c.tx_retries++;
@@ -1488,7 +1490,7 @@ static void rd_kafka_broker_buf_retry (rd_kafka_broker_t *rkb,
 
 
 /**
- * Move buffers that have expired their retry backoff time from the 
+ * Move buffers that have expired their retry backoff time from the
  * retry queue to the outbuf.
  */
 static void rd_kafka_broker_retry_bufs_move (rd_kafka_broker_t *rkb) {
@@ -1504,7 +1506,7 @@ static void rd_kafka_broker_retry_bufs_move (rd_kafka_broker_t *rkb) {
 		rd_kafka_broker_buf_enq0(rkb, rkbuf, 0/*tail*/);
 	}
 }
-	
+
 
 /**
  * Propagate delivery report for entire message queue.
@@ -1776,7 +1778,7 @@ static int rd_kafka_broker_produce_toppar (rd_kafka_broker_t *rkb,
 			/* Not enough remaining size. */
 			break;
 		}
-		
+
 		rd_kafka_msgq_deq(&rktp->rktp_xmit_msgq, rkm, 1);
 
 		rd_kafka_msgq_enq(&rkbuf->rkbuf_msgq, rkm);
@@ -1785,7 +1787,7 @@ static int rd_kafka_broker_produce_toppar (rd_kafka_broker_t *rkb,
 
 		/* Message header */
 		msghdr->part3.Offset = 0;
-		msghdr->part3.MessageSize = 
+		msghdr->part3.MessageSize =
 			(sizeof(msghdr->part3) -
 			 sizeof(msghdr->part3.Offset) -
 			 sizeof(msghdr->part3.MessageSize)) +
@@ -1838,7 +1840,7 @@ static int rd_kafka_broker_produce_toppar (rd_kafka_broker_t *rkb,
 					       Value_len));
 
 		rd_kafka_buf_push(rkbuf, &msghdr->part4, sizeof(msghdr->part4));
-			
+
 
 		/* Payload */
 		msghdr->part3.Crc =
@@ -2068,7 +2070,7 @@ do_send:
 		   "(%"PRId32" bytes)",
 		   rkbuf->rkbuf_msgq.rkmq_msg_cnt,
 		   ntohl(prodhdr->part2.MessageSetSize));
-	
+
 	cnt = rkbuf->rkbuf_msgq.rkmq_msg_cnt;
 
 	if (!rkt->rkt_conf.required_acks)
@@ -2167,6 +2169,7 @@ static void rd_kafka_broker_ua_idle (rd_kafka_broker_t *rkb) {
  * Producer serving
  */
 static void rd_kafka_broker_producer_serve (rd_kafka_broker_t *rkb) {
+  printf("calling rd_kafka_broker_producer_server\n");//xxx
 	rd_ts_t last_timeout_scan = rd_clock();
 	rd_kafka_msgq_t timedout = RD_KAFKA_MSGQ_INITIALIZER(timedout);
 
@@ -2429,7 +2432,7 @@ static rd_kafka_resp_err_t rd_kafka_messageset_handle (rd_kafka_broker_t *rkb,
 
 		/* Extract key */
 		_READ_BYTES(Key);
-		
+
 		/* Extract Value */
 		_READ_BYTES(Value);
 
@@ -2474,7 +2477,7 @@ static rd_kafka_resp_err_t rd_kafka_messageset_handle (rd_kafka_broker_t *rkb,
 			rd_rkb_dbg(rkb, MSG, "MSG",
 				   "Pushed message at offset %"PRId64
 				   " onto queue", hdr->Offset);
-				   
+
 			rd_kafka_q_enq(rkq, rko);
 			break;
 
@@ -2833,7 +2836,7 @@ static void rd_kafka_broker_fetch_reply (rd_kafka_broker_t *rkb,
 
 				if (reply)
 					rd_kafka_buf_destroy(reply);
-							
+
 				rd_kafka_broker_buf_retry(rkb, request);
 				return;
 			}
@@ -3562,7 +3565,7 @@ static void rd_kafka_broker_update (rd_kafka_t *rk,
 		rd_kafka_broker_add(rk, RD_KAFKA_LEARNED,
 				    name, port, nodeid);
 	rd_kafka_unlock(rk);
-		
+
 	/* FIXME: invalidate Leader if required. */
 }
 

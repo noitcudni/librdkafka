@@ -3,24 +3,24 @@
  *
  * Copyright (c) 2012,2013 Magnus Edenhill
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer. 
+ *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
@@ -389,7 +389,7 @@ rd_kafka_topic_t *rd_kafka_topic_find0 (rd_kafka_t *rk,
 
 
 /**
- * Create new topic handle. 
+ * Create new topic handle.
  *
  * Locality: application thread
  */
@@ -464,7 +464,7 @@ const char *rd_kafka_topic_name (const rd_kafka_topic_t *rkt) {
  * Delegates broker 'rkb' as leader for toppar 'rktp'.
  * 'rkb' may be NULL to undelegate leader.
  *
- * Locks: Caller must have rd_kafka_topic_wrlock(rktp->rktp_rkt) 
+ * Locks: Caller must have rd_kafka_topic_wrlock(rktp->rktp_rkt)
  *        AND rd_kafka_toppar_lock(rktp) held.
  */
 void rd_kafka_toppar_broker_delegate (rd_kafka_toppar_t *rktp,
@@ -649,6 +649,7 @@ static int rd_kafka_topic_partition_cnt_update (rd_kafka_topic_t *rkt,
 	rd_kafka_toppar_t *rktp_ua;
 	rd_kafka_toppar_t *rktp;
 	int32_t i;
+        printf("partition_cnt: %d" % partition_cnt); //xxx
 
 	if (rkt->rkt_partition_cnt == partition_cnt) {
 		rd_kafka_dbg(rk, TOPIC, "PARTCNT",
@@ -763,7 +764,7 @@ static void rd_kafka_topic_assign_uas (rd_kafka_topic_t *rkt) {
 	rd_kafka_dbg(rk, TOPIC, "PARTCNT",
 		     "Partitioning %i unassigned messages in topic %.*s to "
 		     "%"PRId32" partitions",
-		     rktp_ua->rktp_msgq.rkmq_msg_cnt, 
+		     rktp_ua->rktp_msgq.rkmq_msg_cnt,
 		     RD_KAFKAP_STR_PR(rkt->rkt_topic),
 		     rkt->rkt_partition_cnt);
 
@@ -876,6 +877,7 @@ int rd_kafka_topic_metadata_update (rd_kafka_broker_t *rkb,
 		rkt->rkt_state = RD_KAFKA_TOPIC_S_EXISTS;
 
 	/* Update number of partitions */
+        printf("rdkafka_topic.c: tm->PartitionMetadata_cnt: %d", tm->PartitionMetadata_cnt); //xxx
 	upd += rd_kafka_topic_partition_cnt_update(rkt,
 						   tm->PartitionMetadata_cnt);
 
