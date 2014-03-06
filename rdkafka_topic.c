@@ -649,7 +649,7 @@ static int rd_kafka_topic_partition_cnt_update (rd_kafka_topic_t *rkt,
 	rd_kafka_toppar_t *rktp_ua;
 	rd_kafka_toppar_t *rktp;
 	int32_t i;
-        printf("partition_cnt: %d" % partition_cnt); //xxx
+        printf("partition_cnt: %d\n" , partition_cnt); //xxx
 
 	if (rkt->rkt_partition_cnt == partition_cnt) {
 		rd_kafka_dbg(rk, TOPIC, "PARTCNT",
@@ -877,7 +877,7 @@ int rd_kafka_topic_metadata_update (rd_kafka_broker_t *rkb,
 		rkt->rkt_state = RD_KAFKA_TOPIC_S_EXISTS;
 
 	/* Update number of partitions */
-        printf("rdkafka_topic.c: tm->PartitionMetadata_cnt: %d", tm->PartitionMetadata_cnt); //xxx
+        printf("rdkafka_topic.c: tm->PartitionMetadata_cnt: %d\n", tm->PartitionMetadata_cnt); //xxx
 	upd += rd_kafka_topic_partition_cnt_update(rkt,
 						   tm->PartitionMetadata_cnt);
 

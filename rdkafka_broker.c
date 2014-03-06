@@ -2100,6 +2100,7 @@ static void rd_kafka_broker_op_serve (rd_kafka_broker_t *rkb,
 	switch (rko->rko_type)
 	{
 	case RD_KAFKA_OP_METADATA_REQ:
+            printf("calling rd_kafka_broker_metadata_req from rd_kafka_broker_op_serve");//xxx
 		if (rko->rko_rkt) {
 			rd_kafka_broker_metadata_req(rkb, 0, rko->rko_rkt,
 						     NULL);
@@ -2128,10 +2129,11 @@ static void rd_kafka_broker_io_serve (rd_kafka_broker_t *rkb) {
 			rd_kafka_broker_op_serve(rkb, rko);
 
 	/* Periodic metadata poll */
-	if (unlikely(now >= rkb->rkb_ts_metadata_poll))
+	if (unlikely(now >= rkb->rkb_ts_metadata_poll)) {
+            printf("calling rd_kafka_broker_metadata_req from rd_kafka_broker_io_serve");//xxx
 		rd_kafka_broker_metadata_req(rkb, 1 /* all topics */, NULL,
 					     "periodic refresh");
-
+        }
 	if (rkb->rkb_outbufs.rkbq_cnt > 0)
 		rkb->rkb_pfd.events |= POLLOUT;
 	else
